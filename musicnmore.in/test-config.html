@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Test - M&M Studio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section h3 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        .config-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #ff6b6b;
+        }
+        .config-item strong {
+            color: #333;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Configuration Test Page</h1>
+    <p>This page tests if the configuration from config.js is being loaded correctly.</p>
+
+    <div class="test-section">
+        <h3>📞 Contact Information</h3>
+        <div class="config-item">
+            <strong>Phone:</strong> <span data-phone id="test-phone">Loading...</span>
+        </div>
+        <div class="config-item">
+            <strong>Email:</strong> <span data-email id="test-email">Loading...</span>
+        </div>
+        <div class="config-item">
+            <strong>Address:</strong> <span data-address id="test-address">Loading...</span>
+        </div>
+        <div class="config-item">
+            <strong>WhatsApp:</strong> <a href="#" data-whatsapp id="test-whatsapp">Loading...</a>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🕒 Business Hours</h3>
+        <div class="config-item">
+            <strong>Hours:</strong> <span data-hours id="test-hours">Loading...</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>📱 Social Media Links</h3>
+        <div class="config-item">
+            <strong>Facebook:</strong> <a href="#" data-social="facebook" id="test-facebook">Loading...</a>
+        </div>
+        <div class="config-item">
+            <strong>Instagram:</strong> <a href="#" data-social="instagram" id="test-instagram">Loading...</a>
+        </div>
+        <div class="config-item">
+            <strong>YouTube:</strong> <a href="#" data-social="youtube" id="test-youtube">Loading...</a>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🗺️ Map Configuration</h3>
+        <div class="config-item">
+            <strong>Coordinates:</strong> <span id="test-coordinates">Loading...</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>📋 Configuration Status</h3>
+        <div id="config-status">
+            <p>Checking configuration...</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🚀 Quick Actions</h3>
+        <a href="index.html" class="btn">Go to Homepage</a>
+        <a href="gallery.html" class="btn">Go to Gallery</a>
+        <button onclick="testWhatsApp()" class="btn">Test WhatsApp</button>
+        <button onclick="reloadConfig()" class="btn">Reload Config</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script>
+        // Test configuration loading
+        function testConfiguration() {
+            const statusDiv = document.getElementById('config-status');
+            
+            if (typeof STUDIO_CONFIG === 'undefined') {
+                statusDiv.innerHTML = '<p class="error">❌ Configuration not loaded! Check if config.js is properly included.</p>';
+                return false;
+            }
+
+            statusDiv.innerHTML = '<p class="success">✅ Configuration loaded successfully!</p>';
+
+            // Test contact info
+            const contact = STUDIO_CONFIG.contact;
+            if (contact) {
+                document.getElementById('test-phone').textContent = contact.phone || 'Not set';
+                document.getElementById('test-email').textContent = contact.email || 'Not set';
+                
+                if (contact.address) {
+                    const address = `${contact.address.street}, ${contact.address.area}, ${contact.address.city}, ${contact.address.state} ${contact.address.zip}`;
+                    document.getElementById('test-address').textContent = address;
+                }
+
+                const whatsappLink = document.getElementById('test-whatsapp');
+                if (contact.whatsapp) {
+                    whatsappLink.href = `https://wa.me/${contact.whatsapp}`;
+                    whatsappLink.textContent = `+${contact.whatsapp}`;
+                }
+            }
+
+            // Test business hours
+            if (STUDIO_CONFIG.hours) {
+                const hours = `${STUDIO_CONFIG.hours.weekdays}, ${STUDIO_CONFIG.hours.weekends}`;
+                document.getElementById('test-hours').textContent = hours;
+            }
+
+            // Test social media
+            const social = STUDIO_CONFIG.social;
+            if (social) {
+                document.getElementById('test-facebook').href = social.facebook || '#';
+                document.getElementById('test-facebook').textContent = social.facebook || 'Not set';
+                
+                document.getElementById('test-instagram').href = social.instagram || '#';
+                document.getElementById('test-instagram').textContent = social.instagram || 'Not set';
+                
+                document.getElementById('test-youtube').href = social.youtube || '#';
+                document.getElementById('test-youtube').textContent = social.youtube || 'Not set';
+            }
+
+            // Test map coordinates
+            if (STUDIO_CONFIG.maps && STUDIO_CONFIG.maps.coordinates) {
+                const coords = STUDIO_CONFIG.maps.coordinates;
+                document.getElementById('test-coordinates').textContent = `Lat: ${coords.lat}, Lng: ${coords.lng}`;
+            }
+
+            return true;
+        }
+
+        function testWhatsApp() {
+            if (STUDIO_CONFIG && STUDIO_CONFIG.contact && STUDIO_CONFIG.contact.whatsapp) {
+                const whatsappUrl = `https://wa.me/${STUDIO_CONFIG.contact.whatsapp}`;
+                window.open(whatsappUrl, '_blank');
+            } else {
+                alert('WhatsApp number not configured!');
+            }
+        }
+
+        function reloadConfig() {
+            location.reload();
+        }
+
+        // Run test when page loads
+        document.addEventListener('DOMContentLoaded', testConfiguration);
+    </script>
+</body>
+</html>

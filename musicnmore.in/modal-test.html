@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Test - M&M Studio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Modal System Test - 2025</h1>
+    <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+        🎉 Welcome to 2025! Testing the latest modal system.
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Different Modal Types</h3>
+        <button class="btn" onclick="testSuccessModal()">Test Success Modal</button>
+        <button class="btn" onclick="testErrorModal()">Test Error Modal</button>
+        <button class="btn" onclick="testWarningModal()">Test Warning Modal</button>
+        <button class="btn" onclick="testInfoModal()">Test Info Modal</button>
+        <button class="btn" onclick="testCallbackModal()">Test Callback Modal</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Form Simulation</h3>
+        <button class="btn" onclick="simulateContactSuccess()">Simulate Contact Success</button>
+        <button class="btn" onclick="simulateContactError()">Simulate Contact Error</button>
+        <button class="btn" onclick="simulateBookingSuccess()">Simulate Booking Success</button>
+        <button class="btn" onclick="simulateBookingError()">Simulate Booking Error</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Navigation</h3>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Website</button>
+        <button class="btn" onclick="window.location.href='test-forms.html'">Test Forms</button>
+    </div>
+
+    <!-- Include the modal system -->
+    <script src="script.js"></script>
+    
+    <script>
+        function testSuccessModal() {
+            ModalManager.show(
+                'Success Test',
+                'This is a success modal test. It should show a green checkmark and auto-close after 10 seconds.',
+                'success'
+            );
+        }
+
+        function testErrorModal() {
+            ModalManager.show(
+                'Error Test',
+                'This is an error modal test. It should show a red X and stay open until manually closed.',
+                'error'
+            );
+        }
+
+        function testWarningModal() {
+            ModalManager.show(
+                'Warning Test',
+                'This is a warning modal test. It should show a yellow warning icon.',
+                'warning'
+            );
+        }
+
+        function testInfoModal() {
+            ModalManager.show(
+                'Info Test',
+                'This is an info modal test. It should show a blue info icon.',
+                'info'
+            );
+        }
+
+        function testCallbackModal() {
+            ModalManager.show(
+                'Callback Test',
+                'This modal has a callback function. Click Continue to see the alert.',
+                'info',
+                () => {
+                    alert('Callback executed successfully!');
+                }
+            );
+        }
+
+        function simulateContactSuccess() {
+            ModalManager.show(
+                'Message Sent!',
+                'Thank you for your message! We will get back to you soon.',
+                'success',
+                () => {
+                    console.log('Would redirect to thank-you.html');
+                    alert('Would redirect to thank-you.html');
+                }
+            );
+        }
+
+        function simulateContactError() {
+            ModalManager.show(
+                'Message Failed',
+                'Sorry, there was an error sending your message: Network timeout<br><br>Please try again or contact us directly.',
+                'error'
+            );
+        }
+
+        function simulateBookingSuccess() {
+            ModalManager.show(
+                'Booking Confirmed!',
+                'Your booking request has been submitted successfully. We will contact you shortly to confirm the details and payment.',
+                'success',
+                () => {
+                    console.log('Would redirect to booking-confirmation.html');
+                    alert('Would redirect to booking-confirmation.html');
+                }
+            );
+        }
+
+        function simulateBookingError() {
+            ModalManager.show(
+                'Booking Failed',
+                'Sorry, there was an error submitting your booking: Invalid form data<br><br>Please try again or contact us directly.',
+                'error'
+            );
+        }
+    </script>
+</body>
+</html>

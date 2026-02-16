@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - M&M: Music and More</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .thank-you-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+        
+        .thank-you-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease;
+        }
+        
+        .thank-you-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1.5rem;
+            animation: bounce 1s ease infinite alternate;
+        }
+        
+        .thank-you-card h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        .thank-you-card p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        
+        .contact-info h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            color: #666;
+        }
+        
+        .contact-item i {
+            color: #ff6b6b;
+            margin-right: 0.8rem;
+            width: 20px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .thank-you-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .thank-you-card h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="thank-you-container">
+        <div class="thank-you-card">
+            <div class="thank-you-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            
+            <h1>Thank You!</h1>
+            
+            <p>
+                Your message has been received successfully. We appreciate you reaching out to M&M: Music and More. 
+                Our team will review your inquiry and get back to you within 24 hours.
+            </p>
+            
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span data-phone>+91 7249298876</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span data-email>musicnmore1234@gmail.com</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp: +91 7249298876</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span data-address>M&M : Music and More, Near Geetanjali Saloon, Kharadi, Pune, Maharashtra 411014</span>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    Back to Home
+                </a>
+                <a href="index.html#booking" class="btn btn-secondary">
+                    <i class="fas fa-calendar"></i>
+                    Book a Session
+                </a>
+            </div>
+            
+            <p style="margin-top: 2rem; font-size: 0.9rem; color: #999;">
+                Follow us on social media for updates and special offers!
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script>
+        // Update contact information from config
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof STUDIO_CONFIG !== 'undefined') {
+                const config = STUDIO_CONFIG.contact;
+                
+                // Update phone
+                const phoneElements = document.querySelectorAll('[data-phone]');
+                phoneElements.forEach(el => {
+                    el.textContent = config.phone;
+                });
+                
+                // Update email
+                const emailElements = document.querySelectorAll('[data-email]');
+                emailElements.forEach(el => {
+                    el.textContent = config.email;
+                });
+                
+                // Update address
+                const addressElements = document.querySelectorAll('[data-address]');
+                addressElements.forEach(el => {
+                    el.textContent = `${config.address.street}, ${config.address.area}, ${config.address.city}, ${config.address.state} ${config.address.zip}`;
+                });
+            }
+        });
+        
+        // Auto redirect after 30 seconds
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking System Test - M&M Studio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section h3 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+        .btn.success {
+            background: #28a745;
+        }
+        .btn.danger {
+            background: #dc3545;
+        }
+        .booking-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #ff6b6b;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .booking-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .booking-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Booking System Test - 2025</h1>
+    <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+        🎉 Welcome to 2025! All dates updated for the new year.
+    </div>
+    <p>Test the booking system's date handling and room conflict logic with 2025 dates.</p>
+
+    <div class="test-section">
+        <h3>📅 Date Handling Test</h3>
+        <p>Test if selected dates are correctly formatted and stored.</p>
+        <button class="btn" onclick="testDateFormatting()">Test Date Formatting</button>
+        <button class="btn" onclick="testDateSelection()">Test Date Selection</button>
+        <div id="date-test-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🏠 Room Conflict Test</h3>
+        <p>Test room availability logic and conflicts between Room 1 services.</p>
+        <button class="btn" onclick="testRoomConflicts()">Test Room Conflicts</button>
+        <button class="btn" onclick="simulateBookings()">Simulate Test Bookings</button>
+        <button class="btn danger" onclick="clearAllBookings()">Clear All Bookings</button>
+        <div id="room-test-results"></div>
+    </div>
+
+    <div class="grid">
+        <div class="test-section">
+            <h3>📋 Current Bookings</h3>
+            <div id="current-bookings" class="booking-list">
+                <p>No bookings found.</p>
+            </div>
+            <button class="btn" onclick="refreshBookings()">Refresh</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Availability Check</h3>
+            <div class="booking-info">
+                <strong>Date:</strong> <input type="date" id="test-date" value="2025-06-10"><br><br>
+                <strong>Service:</strong>
+                <select id="test-service">
+                    <option value="room1-jamming">Room 1 - Jamming</option>
+                    <option value="room1-gaming">Room 1 - Gaming</option>
+                    <option value="room2-recording">Room 2 - Recording</option>
+                </select><br><br>
+                <strong>Time:</strong>
+                <select id="test-time">
+                    <option value="10:00">10:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="16:00">4:00 PM</option>
+                    <option value="18:00">6:00 PM</option>
+                    <option value="20:00">8:00 PM</option>
+                </select><br><br>
+                <button class="btn" onclick="checkAvailability()">Check Availability</button>
+            </div>
+            <div id="availability-result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎯 Quick Tests</h3>
+        <button class="btn" onclick="runAllTests()">Run All Tests</button>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Website</button>
+        <button class="btn" onclick="window.location.href='test-forms.html'">Test Forms</button>
+    </div>
+
+    <!-- Include the booking system -->
+    <script src="security.js"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Test date formatting
+        function testDateFormatting() {
+            const container = document.getElementById('date-test-results');
+            let results = '<h4>Date Formatting Tests:</h4>';
+            
+            // Test various dates
+            const testDates = [
+                new Date(2025, 5, 10), // June 10, 2025 (month is 0-indexed)
+                new Date(2025, 11, 31), // December 31, 2025
+                new Date(2025, 0, 1)    // January 1, 2025
+            ];
+            
+            testDates.forEach((date, index) => {
+                const formatted = bookingSystem.formatDate(date);
+                const expected = date.getFullYear() + '-' + 
+                    String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(date.getDate()).padStart(2, '0');
+                
+                const passed = formatted === expected;
+                results += `
+                    <div class="test-result ${passed ? 'pass' : 'fail'}">
+                        ${passed ? '✅' : '❌'} Test ${index + 1}: ${date.toDateString()}<br>
+                        Expected: ${expected}<br>
+                        Got: ${formatted}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = results;
+        }
+
+        // Test date selection
+        function testDateSelection() {
+            const container = document.getElementById('date-test-results');
+            let results = container.innerHTML + '<h4>Date Selection Tests:</h4>';
+            
+            // Test if June 10 is correctly selected
+            const testDate = new Date(2025, 5, 10); // June 10, 2025
+            const formatted = bookingSystem.formatDate(testDate);
+            
+            results += `
+                <div class="test-result pass">
+                    ✅ Date Selection: ${testDate.toDateString()}<br>
+                    Formatted: ${formatted}<br>
+                    Expected for June 10: 2025-06-10
+                </div>
+            `;
+            
+            container.innerHTML = results;
+        }
+
+        // Test room conflicts
+        function testRoomConflicts() {
+            const container = document.getElementById('room-test-results');
+            let results = '<h4>Room Conflict Tests:</h4>';
+            
+            // Clear existing bookings for clean test
+            localStorage.removeItem('studioBookings');
+            bookingSystem.bookings = {};
+            
+            const testDate = '2025-06-10';
+            const testTime = '14:00';
+            
+            // Test 1: Book jamming session
+            const jammingKey = `${testDate}_room1-jamming_${testTime}`;
+            bookingSystem.bookings[jammingKey] = {
+                date: testDate,
+                room: 'room1-jamming',
+                time: testTime,
+                name: 'Test User'
+            };
+            
+            // Test 2: Check if gaming is blocked
+            const gamingAvailable = bookingSystem.isTimeSlotAvailable(testDate, 'room1-gaming', testTime);
+            const jammingAvailable = bookingSystem.isTimeSlotAvailable(testDate, 'room1-jamming', testTime);
+            const recordingAvailable = bookingSystem.isTimeSlotAvailable(testDate, 'room2-recording', testTime);
+            
+            results += `
+                <div class="test-result ${!gamingAvailable ? 'pass' : 'fail'}">
+                    ${!gamingAvailable ? '✅' : '❌'} Gaming blocked when jamming booked: ${!gamingAvailable}
+                </div>
+                <div class="test-result ${!jammingAvailable ? 'pass' : 'fail'}">
+                    ${!jammingAvailable ? '✅' : '❌'} Jamming blocked when jamming booked: ${!jammingAvailable}
+                </div>
+                <div class="test-result ${recordingAvailable ? 'pass' : 'fail'}">
+                    ${recordingAvailable ? '✅' : '❌'} Recording available when jamming booked: ${recordingAvailable}
+                </div>
+            `;
+            
+            container.innerHTML = results;
+            refreshBookings();
+        }
+
+        // Simulate test bookings
+        function simulateBookings() {
+            const testBookings = [
+                { date: '2025-06-10', room: 'room1-jamming', time: '10:00', name: 'John Doe' },
+                { date: '2025-06-10', room: 'room2-recording', time: '10:00', name: 'Jane Smith' },
+                { date: '2025-06-10', room: 'room1-gaming', time: '14:00', name: 'Bob Wilson' },
+                { date: '2025-06-11', room: 'room1-jamming', time: '16:00', name: 'Alice Brown' }
+            ];
+            
+            testBookings.forEach(booking => {
+                const key = `${booking.date}_${booking.room}_${booking.time}`;
+                bookingSystem.bookings[key] = booking;
+            });
+            
+            bookingSystem.saveBookings();
+            refreshBookings();
+            
+            document.getElementById('room-test-results').innerHTML += `
+                <div class="test-result pass">
+                    ✅ Created ${testBookings.length} test bookings
+                </div>
+            `;
+        }
+
+        // Clear all bookings
+        function clearAllBookings() {
+            localStorage.removeItem('studioBookings');
+            bookingSystem.bookings = {};
+            refreshBookings();
+            
+            document.getElementById('room-test-results').innerHTML += `
+                <div class="test-result pass">
+                    ✅ All bookings cleared
+                </div>
+            `;
+        }
+
+        // Refresh bookings display
+        function refreshBookings() {
+            const container = document.getElementById('current-bookings');
+            const bookings = bookingSystem.loadBookings();
+            
+            if (Object.keys(bookings).length === 0) {
+                container.innerHTML = '<p>No bookings found.</p>';
+                return;
+            }
+            
+            let html = '';
+            Object.entries(bookings).forEach(([key, booking]) => {
+                const serviceName = bookingSystem.getServiceDisplayName(booking.room);
+                html += `
+                    <div class="booking-item">
+                        <strong>${booking.date}</strong> at <strong>${booking.time}</strong><br>
+                        ${serviceName} - ${booking.name}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Check availability
+        function checkAvailability() {
+            const date = document.getElementById('test-date').value;
+            const service = document.getElementById('test-service').value;
+            const time = document.getElementById('test-time').value;
+            
+            const available = bookingSystem.isTimeSlotAvailable(date, service, time);
+            const conflicting = bookingSystem.getConflictingService(date, service, time);
+            
+            let result = `
+                <div class="test-result ${available ? 'pass' : 'fail'}">
+                    ${available ? '✅ Available' : '❌ Not Available'}<br>
+                    Date: ${date}<br>
+                    Service: ${bookingSystem.getServiceDisplayName(service)}<br>
+                    Time: ${time}
+            `;
+            
+            if (!available && conflicting) {
+                result += `<br>Conflicting with: ${bookingSystem.getServiceDisplayName(conflicting)}`;
+            }
+            
+            result += '</div>';
+            
+            document.getElementById('availability-result').innerHTML = result;
+        }
+
+        // Run all tests
+        function runAllTests() {
+            testDateFormatting();
+            setTimeout(() => testDateSelection(), 500);
+            setTimeout(() => testRoomConflicts(), 1000);
+            setTimeout(() => simulateBookings(), 1500);
+            setTimeout(() => refreshBookings(), 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default test date to June 10, 2025
+            document.getElementById('test-date').value = '2025-06-10';
+            refreshBookings();
+        });
+    </script>
+</body>
+</html>

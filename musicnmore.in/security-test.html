@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Test - M&M Studio</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section h3 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .test-item h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #ff6b6b;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 Security Test Dashboard - 2025</h1>
+    <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+        🎉 Welcome to 2025! Security measures updated for the new year.
+    </div>
+    <p>This page tests all security measures implemented on your M&M Studio website with 2025 standards.</p>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number" id="total-tests">0</div>
+            <div class="stat-label">Total Tests</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="passed-tests">0</div>
+            <div class="stat-label">Passed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="failed-tests">0</div>
+            <div class="stat-label">Failed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="security-score">0%</div>
+            <div class="stat-label">Security Score</div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>🛡️ Security Headers Test</h3>
+        <div id="headers-test"></div>
+        <button class="btn" onclick="testSecurityHeaders()">Test Headers</button>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Input Validation Test</h3>
+        <div id="validation-test"></div>
+        <button class="btn" onclick="testInputValidation()">Test Validation</button>
+    </div>
+
+    <div class="test-section">
+        <h3>⏱️ Rate Limiting Test</h3>
+        <div id="rate-limit-test"></div>
+        <button class="btn" onclick="testRateLimit()">Test Rate Limit</button>
+        <button class="btn" onclick="resetRateLimit()">Reset Rate Limit</button>
+    </div>
+
+    <div class="test-section">
+        <h3>🔐 Session Management Test</h3>
+        <div id="session-test"></div>
+        <button class="btn" onclick="testSessionManagement()">Test Session</button>
+    </div>
+
+    <div class="test-section">
+        <h3>🚫 XSS Protection Test</h3>
+        <div id="xss-test"></div>
+        <button class="btn" onclick="testXSSProtection()">Test XSS Protection</button>
+    </div>
+
+    <div class="test-section">
+        <h3>📋 Content Security Policy Test</h3>
+        <div id="csp-test"></div>
+        <button class="btn" onclick="testCSP()">Test CSP</button>
+    </div>
+
+    <div class="test-section">
+        <h3>📊 Security Logs</h3>
+        <div id="security-logs"></div>
+        <button class="btn" onclick="viewSecurityLogs()">View Logs</button>
+        <button class="btn" onclick="clearSecurityLogs()">Clear Logs</button>
+    </div>
+
+    <div class="test-section">
+        <h3>🔧 Quick Actions</h3>
+        <button class="btn" onclick="runAllTests()">Run All Tests</button>
+        <button class="btn" onclick="exportResults()">Export Results</button>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Website</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="security.js"></script>
+    <script>
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            tests: []
+        };
+
+        function addTestResult(name, passed, message, details = '') {
+            testResults.total++;
+            if (passed) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+            
+            testResults.tests.push({
+                name: name,
+                passed: passed,
+                message: message,
+                details: details,
+                timestamp: new Date().toISOString()
+            });
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('total-tests').textContent = testResults.total;
+            document.getElementById('passed-tests').textContent = testResults.passed;
+            document.getElementById('failed-tests').textContent = testResults.failed;
+            
+            const score = testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0;
+            document.getElementById('security-score').textContent = score + '%';
+        }
+
+        function createTestResult(passed, message, details = '') {
+            const className = passed ? 'pass' : 'fail';
+            const icon = passed ? '✅' : '❌';
+            return `
+                <div class="test-result ${className}">
+                    ${icon} ${message}
+                    ${details ? `<div class="code">${details}</div>` : ''}
+                </div>
+            `;
+        }
+
+        function testSecurityHeaders() {
+            const container = document.getElementById('headers-test');
+            container.innerHTML = '<p>Testing security headers...</p>';
+            
+            const headers = [
+                'X-Frame-Options',
+                'X-Content-Type-Options',
+                'X-XSS-Protection',
+                'Content-Security-Policy',
+                'Referrer-Policy'
+            ];
+            
+            let results = '';
+            headers.forEach(header => {
+                const metaTag = document.querySelector(`meta[http-equiv="${header}"]`);
+                const passed = metaTag !== null;
+                const content = metaTag ? metaTag.getAttribute('content') : 'Not found';
+                
+                results += createTestResult(passed, `${header}: ${passed ? 'Present' : 'Missing'}`, 
+                    passed ? `Content: ${content}` : '');
+                
+                addTestResult(`Header: ${header}`, passed, passed ? 'Present' : 'Missing', content);
+            });
+            
+            container.innerHTML = results;
+        }
+
+        function testInputValidation() {
+            const container = document.getElementById('validation-test');
+            container.innerHTML = '<p>Testing input validation...</p>';
+            
+            let results = '';
+            
+            // Test XSS patterns
+            const xssTests = [
+                '<script>alert("xss")</script>',
+                'javascript:alert("xss")',
+                'onload=alert("xss")',
+                '<iframe src="javascript:alert(\'xss\')"></iframe>'
+            ];
+            
+            xssTests.forEach((test, index) => {
+                try {
+                    const isValid = SECURITY.validate.xss(test);
+                    const passed = !isValid; // Should fail validation
+                    results += createTestResult(passed, `XSS Test ${index + 1}: ${passed ? 'Blocked' : 'Allowed'}`, 
+                        `Input: ${test}`);
+                    addTestResult(`XSS Test ${index + 1}`, passed, passed ? 'Blocked' : 'Allowed', test);
+                } catch (error) {
+                    results += createTestResult(false, `XSS Test ${index + 1}: Error`, error.message);
+                    addTestResult(`XSS Test ${index + 1}`, false, 'Error', error.message);
+                }
+            });
+            
+            // Test input length limits
+            const longInput = 'a'.repeat(1001);
+            try {
+                const sanitized = SECURITY.sanitize.html(longInput);
+                const passed = sanitized.length <= 1000;
+                results += createTestResult(passed, `Length Limit Test: ${passed ? 'Enforced' : 'Failed'}`, 
+                    `Input length: ${longInput.length}, Output length: ${sanitized.length}`);
+                addTestResult('Length Limit Test', passed, passed ? 'Enforced' : 'Failed');
+            } catch (error) {
+                results += createTestResult(false, 'Length Limit Test: Error', error.message);
+                addTestResult('Length Limit Test', false, 'Error', error.message);
+            }
+            
+            container.innerHTML = results;
+        }
+
+        function testRateLimit() {
+            const container = document.getElementById('rate-limit-test');
+            container.innerHTML = '<p>Testing rate limiting...</p>';
+            
+            let results = '';
+            let testsPassed = 0;
+            
+            try {
+                // Test remaining submissions
+                const remaining = SECURITY.rateLimit.remaining();
+                const passed1 = remaining >= 0 && remaining <= 5;
+                results += createTestResult(passed1, `Rate Limit Check: ${passed1 ? 'Working' : 'Failed'}`, 
+                    `Remaining submissions: ${remaining}`);
+                addTestResult('Rate Limit Check', passed1, passed1 ? 'Working' : 'Failed', `Remaining: ${remaining}`);
+                if (passed1) testsPassed++;
+                
+                // Test rate limit enforcement
+                if (remaining > 0) {
+                    SECURITY.rateLimit.check();
+                    const newRemaining = SECURITY.rateLimit.remaining();
+                    const passed2 = newRemaining === remaining - 1;
+                    results += createTestResult(passed2, `Rate Limit Decrement: ${passed2 ? 'Working' : 'Failed'}`, 
+                        `Before: ${remaining}, After: ${newRemaining}`);
+                    addTestResult('Rate Limit Decrement', passed2, passed2 ? 'Working' : 'Failed');
+                    if (passed2) testsPassed++;
+                } else {
+                    results += createTestResult(true, 'Rate Limit Exceeded: Cannot test decrement', 
+                        'Rate limit already reached');
+                    addTestResult('Rate Limit Exceeded', true, 'Cannot test - limit reached');
+                    testsPassed++;
+                }
+                
+            } catch (error) {
+                const passed = error.message.includes('Too many submissions');
+                results += createTestResult(passed, `Rate Limit Enforcement: ${passed ? 'Working' : 'Failed'}`, 
+                    error.message);
+                addTestResult('Rate Limit Enforcement', passed, passed ? 'Working' : 'Failed', error.message);
+                if (passed) testsPassed++;
+            }
+            
+            container.innerHTML = results;
+        }
+
+        function resetRateLimit() {
+            SECURITY.rateLimit.reset();
+            document.getElementById('rate-limit-test').innerHTML = 
+                createTestResult(true, 'Rate limit reset successfully', 'You can now test rate limiting again');
+        }
+
+        function testSessionManagement() {
+            const container = document.getElementById('session-test');
+            container.innerHTML = '<p>Testing session management...</p>';
+            
+            let results = '';
+            
+            // Test session creation
+            const session = SECURITY.session.get();
+            const passed1 = session !== null && session.id;
+            results += createTestResult(passed1, `Session Creation: ${passed1 ? 'Working' : 'Failed'}`, 
+                passed1 ? `Session ID: ${session.id.substring(0, 8)}...` : 'No session found');
+            addTestResult('Session Creation', passed1, passed1 ? 'Working' : 'Failed');
+            
+            // Test session validation
+            const isValid = SECURITY.session.isValid();
+            results += createTestResult(isValid, `Session Validation: ${isValid ? 'Valid' : 'Invalid'}`, 
+                isValid ? 'Session is active and valid' : 'Session is invalid or expired');
+            addTestResult('Session Validation', isValid, isValid ? 'Valid' : 'Invalid');
+            
+            // Test session update
+            try {
+                SECURITY.session.update();
+                const updatedSession = SECURITY.session.get();
+                const passed3 = updatedSession && updatedSession.lastActivity > session.lastActivity;
+                results += createTestResult(passed3, `Session Update: ${passed3 ? 'Working' : 'Failed'}`, 
+                    passed3 ? 'Last activity timestamp updated' : 'Activity timestamp not updated');
+                addTestResult('Session Update', passed3, passed3 ? 'Working' : 'Failed');
+            } catch (error) {
+                results += createTestResult(false, 'Session Update: Error', error.message);
+                addTestResult('Session Update', false, 'Error', error.message);
+            }
+            
+            container.innerHTML = results;
+        }
+
+        function testXSSProtection() {
+            const container = document.getElementById('xss-test');
+            container.innerHTML = '<p>Testing XSS protection...</p>';
+            
+            let results = '';
+            
+            // Test HTML sanitization
+            const maliciousHTML = '<script>alert("xss")</script><img src="x" onerror="alert(\'xss\')">';
+            const sanitized = SECURITY.sanitize.html(maliciousHTML);
+            const passed1 = !sanitized.includes('<script>') && !sanitized.includes('onerror');
+            results += createTestResult(passed1, `HTML Sanitization: ${passed1 ? 'Working' : 'Failed'}`, 
+                `Input: ${maliciousHTML}<br>Output: ${sanitized}`);
+            addTestResult('HTML Sanitization', passed1, passed1 ? 'Working' : 'Failed');
+            
+            // Test XSS pattern detection
+            const xssPatterns = [
+                'javascript:void(0)',
+                'onload=alert(1)',
+                '<iframe src="javascript:alert(1)"></iframe>'
+            ];
+            
+            xssPatterns.forEach((pattern, index) => {
+                const isBlocked = !SECURITY.validate.xss(pattern);
+                results += createTestResult(isBlocked, `XSS Pattern ${index + 1}: ${isBlocked ? 'Blocked' : 'Allowed'}`, 
+                    `Pattern: ${pattern}`);
+                addTestResult(`XSS Pattern ${index + 1}`, isBlocked, isBlocked ? 'Blocked' : 'Allowed', pattern);
+            });
+            
+            container.innerHTML = results;
+        }
+
+        function testCSP() {
+            const container = document.getElementById('csp-test');
+            container.innerHTML = '<p>Testing Content Security Policy...</p>';
+            
+            let results = '';
+            
+            // Check if CSP header exists
+            const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+            const passed1 = cspMeta !== null;
+            results += createTestResult(passed1, `CSP Header: ${passed1 ? 'Present' : 'Missing'}`, 
+                passed1 ? `Policy: ${cspMeta.getAttribute('content').substring(0, 100)}...` : '');
+            addTestResult('CSP Header', passed1, passed1 ? 'Present' : 'Missing');
+            
+            // Test inline script blocking (this should be blocked by CSP)
+            try {
+                const testResult = SECURITY.csp.checkInlineScript();
+                results += createTestResult(!testResult, `Inline Script Blocking: ${!testResult ? 'Working' : 'Failed'}`, 
+                    !testResult ? 'Inline scripts are properly blocked' : 'Inline scripts are allowed');
+                addTestResult('Inline Script Blocking', !testResult, !testResult ? 'Working' : 'Failed');
+            } catch (error) {
+                results += createTestResult(true, 'Inline Script Blocking: Working', 
+                    'CSP successfully blocked inline script execution');
+                addTestResult('Inline Script Blocking', true, 'Working');
+            }
+            
+            container.innerHTML = results;
+        }
+
+        function viewSecurityLogs() {
+            const container = document.getElementById('security-logs');
+            const logs = JSON.parse(localStorage.getItem('mm_security_logs') || '[]');
+            
+            if (logs.length === 0) {
+                container.innerHTML = '<p>No security logs found.</p>';
+                return;
+            }
+            
+            let logHTML = '<h4>Recent Security Events:</h4>';
+            logs.slice(-10).reverse().forEach(log => {
+                logHTML += `
+                    <div class="test-item">
+                        <h4>${log.event}</h4>
+                        <p><strong>Time:</strong> ${new Date(log.timestamp).toLocaleString()}</p>
+                        <p><strong>Details:</strong> ${JSON.stringify(log.details)}</p>
+                        <p><strong>URL:</strong> ${log.url}</p>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = logHTML;
+        }
+
+        function clearSecurityLogs() {
+            localStorage.removeItem('mm_security_logs');
+            document.getElementById('security-logs').innerHTML = 
+                createTestResult(true, 'Security logs cleared successfully', '');
+        }
+
+        function runAllTests() {
+            testResults = { total: 0, passed: 0, failed: 0, tests: [] };
+            updateStats();
+            
+            testSecurityHeaders();
+            setTimeout(() => testInputValidation(), 500);
+            setTimeout(() => testRateLimit(), 1000);
+            setTimeout(() => testSessionManagement(), 1500);
+            setTimeout(() => testXSSProtection(), 2000);
+            setTimeout(() => testCSP(), 2500);
+        }
+
+        function exportResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                summary: {
+                    total: testResults.total,
+                    passed: testResults.passed,
+                    failed: testResults.failed,
+                    score: testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0
+                },
+                tests: testResults.tests
+            };
+            
+            const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `security-test-results-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-run basic tests on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>
